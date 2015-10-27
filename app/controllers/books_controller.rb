@@ -1,10 +1,11 @@
 class BooksController < ApplicationController
+  before_action :authenticate_user!, only: [:new, :edit, :create, :update, :destroy]
   before_action :set_book, only: [:show, :edit, :update, :destroy]
 
   # GET /books
   # GET /books.json
   def index
-    @books = Book.where(availability: true)
+    @books = current_user.books.where(availability: true)
   end
 
   # GET /books/1
@@ -24,8 +25,8 @@ class BooksController < ApplicationController
   # POST /books
   # POST /books.json
   def create
-    @book = Book.new(book_params)
-
+    @book = current_user.books.new(book_params)
+    
     respond_to do |format|
       if @book.save
         format.html { redirect_to @book, notice: 'Book was successfully created.' }
